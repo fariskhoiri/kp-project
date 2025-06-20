@@ -23,21 +23,21 @@
                     <div class="form-group row">
                         <label for="nama_perusahaan" class="col-lg-2 control-label">Nama Perusahaan</label>
                         <div class="col-lg-6">
-                            <input type="text" name="nama_perusahaan" class="form-control" id="nama_perusahaan" required autofocus>
+                            <input type="text" name="nama_perusahaan" class="form-control" id="nama_perusahaan" required autofocus value="{{ $setting->nama_perusahaan }}">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="telepon" class="col-lg-2 control-label">Telepon</label>
                         <div class="col-lg-6">
-                            <input type="text" name="telepon" class="form-control" id="telepon" required>
+                            <input type="text" name="telepon" class="form-control" id="telepon" required value="{{ $setting->telepon }}">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="alamat" class="col-lg-2 control-label">Alamat</label>
                         <div class="col-lg-6">
-                            <textarea name="alamat" class="form-control" id="alamat" rows="3" required></textarea>
+                            <textarea name="alamat" class="form-control" id="alamat" rows="3" required>{{ $setting->alamat }}</textarea>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -48,33 +48,16 @@
                                 onchange="preview('.tampil-logo', this.files[0])">
                             <span class="help-block with-errors"></span>
                             <br>
-                            <div class="tampil-logo"></div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="path_kartu_member" class="col-lg-2 control-label">Kartu Member</label>
-                        <div class="col-lg-4">
-                            <input type="file" name="path_kartu_member" class="form-control" id="path_kartu_member"
-                                onchange="preview('.tampil-kartu-member', this.files[0], 300)">
-                            <span class="help-block with-errors"></span>
-                            <br>
-                            <div class="tampil-kartu-member"></div>
+                            <div class="tampil-logo">
+                                <!-- 1. Gunakan helper asset() untuk menampilkan gambar dari storage -->
+                                <img src="{{ asset($setting->path_logo) }}" width="200">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="diskon" class="col-lg-2 control-label">Diskon</label>
                         <div class="col-lg-2">
-                            <input type="number" name="diskon" class="form-control" id="diskon" required>
-                            <span class="help-block with-errors"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="tipe_nota" class="col-lg-2 control-label">Tipe Nota</label>
-                        <div class="col-lg-2">
-                            <select name="tipe_nota" class="form-control" id="tipe_nota" required>
-                                <option value="1">Nota Kecil</option>
-                                <option value="2">Nota Besar</option>
-                            </select>
+                            <input type="number" name="diskon" class="form-control" id="diskon" required value="{{ $setting->diskon }}">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -125,8 +108,8 @@
                 $('[name=nama_perusahaan]').val(response.nama_perusahaan);
                 $('[name=telepon]').val(response.telepon);
                 $('[name=alamat]').val(response.alamat);
-                $('[name=diskon]').val(response.diskon);
-                $('[name=tipe_nota]').val(response.tipe_nota);
+                //$('[name=diskon]').val(response.diskon);
+                //$('[name=tipe_nota]').val(response.tipe_nota);
                 $('title').text(response.nama_perusahaan + ' | Pengaturan');
                 
                 let words = response.nama_perusahaan.split(' ');

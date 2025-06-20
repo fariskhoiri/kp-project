@@ -4,34 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
     public function index()
     {
-        return view('setting.index');
+        return view('setting.index', [
+            'setting' => Setting::first()
+        ]);
     }
 
     public function show()
     {
-        return Setting::first();
+        //
     }
 
     public function update(Request $request)
     {
+        //Validasi request
+        $request->validate([
+            'nama_perusahaan' => 'required',
+            'telepon' => 'required',
+            'alamat' => 'required',
+            'diskon' => 'required|numeric',
+            'path_logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048' //Tambahkan validasi
+        ]);
+
         $setting = Setting::first();
+
         $setting->nama_perusahaan = $request->nama_perusahaan;
         $setting->telepon = $request->telepon;
         $setting->alamat = $request->alamat;
         $setting->diskon = $request->diskon;
-        $setting->tipe_nota = $request->tipe_nota;
 
         if ($request->hasFile('path_logo')) {
-            $file = $request->file('path_logo');
-            $nama = 'logo-' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('/img'), $nama);
+            //Hapus logo lama jika ada
+            if ($setting->path_logo && Storage::disk('public')->exists(str_replace('/storage', '', $setting->path_logo))) {
+                Storage::disk('public')->delete(str_replace('/storage', '', $setting->path_logo));
+            }
 
-            $setting->path_logo = "/img/$nama";
+            //Simpan gambar baru menggunakan storage facade
+            $path = $request->file('path_logo')->store('logo', 'public');
+
+            //Simpan path yang dapat diakses oleh helper asset()
+            $setting->path_logo = Storage::url($path);
         }
 
         if ($request->hasFile('path_kartu_member')) {
@@ -44,6 +61,6 @@ class SettingController extends Controller
 
         $setting->update();
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->route('setting.index')->with('success', 'Pengaturan berhasil diperbarui');
     }
 }
